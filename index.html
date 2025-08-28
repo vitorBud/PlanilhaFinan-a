@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinançasPro - Planilha Financeira</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>FinançasPro</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Início</a></li>
+                    <li><a href="#"><i class="fas fa-chart-pie"></i> Relatórios</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Configurações</a></li>
+                    <li><a href="#"><i class="fas fa-question-circle"></i> Ajuda</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <div class="filters">
+                    <h2>Filtros</h2>
+                    <div class="filter-group">
+                        <label for="date-range">Período</label>
+                        <select id="date-range">
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="30" selected>Últimos 30 dias</option>
+                            <option value="90">Últimos 3 meses</option>
+                            <option value="365">Último ano</option>
+                            <option value="custom">Personalizado</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="category">Categoria</label>
+                        <select id="category">
+                            <option value="">Todas as categorias</option>
+                            <option value="food">Alimentação</option>
+                            <option value="transport">Transporte</option>
+                            <option value="housing">Moradia</option>
+                            <option value="health">Saúde</option>
+                            <option value="education">Educação</option>
+                            <option value="entertainment">Entretenimento</option>
+                            <option value="other">Outras</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="type">Tipo</label>
+                        <select id="type">
+                            <option value="">Todos os tipos</option>
+                            <option value="income">Receita</option>
+                            <option value="expense">Despesa</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="apply-filters">Aplicar Filtros</button>
+                </div>
+
+                <div class="quick-actions" style="margin-top: 2rem;">
+                    <h2>Ações Rápidas</h2>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="add-transaction-sidebar">
+                        <i class="fas fa-plus"></i> Nova Transação
+                    </button>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-file-export"></i> Exportar Dados
+                    </button>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-chart-bar"></i> Gerar Relatório
+                    </button>
+                </div>
+            </aside>
+
+            <section class="dashboard-content">
+                <div class="dashboard">
+                    <div class="card">
+                        <h3>Saldo Atual</h3>
+                        <p class="value positive" id="saldo-atual">R$ 0,00</p>
+                        <p><i class="fas fa-arrow-up"></i> 0% desde o mês passado</p>
+                    </div>
+                    <div class="card">
+                        <h3>Receitas</h3>
+                        <p class="value positive" id="total-receitas">R$ 0,00</p>
+                        <p><i class="fas fa-arrow-up"></i> 0% desde o mês passado</p>
+                    </div>
+                    <div class="card">
+                        <h3>Despesas</h3>
+                        <p class="value negative" id="total-despesas">R$ 0,00</p>
+                        <p><i class="fas fa-arrow-down"></i> 0% desde o mês passado</p>
+                    </div>
+                    <div class="card">
+                        <h3>Meta Mensal</h3>
+                        <p class="value" id="meta-mensal">0%</p>
+                        <div style="background: #eee; border-radius: 4px; height: 10px; margin-top: 10px;">
+                            <div id="meta-bar" style="background: var(--success-color); width: 0%; height: 10px; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                </div>
+
+                <div class="transactions">
+                    <div class="transactions-header">
+                        <h2>Transações Recentes</h2>
+                        <div>
+                            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="add-transaction-table">
+                                <i class="fas fa-plus"></i> Nova Transação
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data <i class="fas fa-sort"></i></th>
+                                <th>Descrição <i class="fas fa-sort"></i></th>
+                                <th>Categoria <i class="fas fa-sort"></i></th>
+                                <th>Valor <i class="fas fa-sort"></i></th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-body">
+                            <!-- As transações serão inseridas aqui via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="finance-chart"></canvas>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>FinançasPro &copy; 2023 - Sistema de Gestão Financeira Pessoal</p>
+        </footer>
+    </div>
+
+    <!-- Modal para adicionar/editar transação -->
+    <div class="modal" id="transaction-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Nova Transação</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="transaction-form">
+                <div class="form-group">
+                    <label for="transaction-date">Data</label>
+                    <input type="date" id="transaction-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="transaction-description">Descrição</label>
+                    <input type="text" id="transaction-description" required>
+                </div>
+                <div class="form-group">
+                    <label for="transaction-category">Categoria</label>
+                    <select id="transaction-category" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="food">Alimentação</option>
+                        <option value="transport">Transporte</option>
+                        <option value="housing">Moradia</option>
+                        <option value="health">Saúde</option>
+                        <option value="education">Educação</option>
+                        <option value="entertainment">Entretenimento</option>
+                        <option value="other">Outras</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transaction-type">Tipo</label>
+                    <select id="transaction-type" required>
+                        <option value="income">Receita</option>
+                        <option value="expense">Despesa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transaction-value">Valor (R$)</label>
+                    <input type="number" id="transaction-value" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="transaction-notes">Observações</label>
+                    <textarea id="transaction-notes" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="cancel-transaction">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
